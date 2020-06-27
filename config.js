@@ -7,7 +7,7 @@ const config = {
         database: "racketpal"
     },
     rules: {
-        timeframe: "weeks",
+        timeframe: "days",
         quantity: 2,
         shifts: "half"
     }

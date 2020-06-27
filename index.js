@@ -3,6 +3,7 @@ const config = require('./config');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const moment = require('moment');
+const cors = require('cors');
 
 const EngineerModel = require('./models/engineer.model');
 const HistoryModel = require('./models/history.model');
@@ -21,6 +22,8 @@ db.once('open', function () {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static('support-wheel-of-fate/src'));
+app.use(cors());
 
 app.get('/get-engineers', (req, res, next) => {
     EngineerModel.find().then(engineers => {
@@ -36,12 +39,14 @@ app.get('/valid-engineers', (req, res) => {
     .then(results => {
         let validEngineers = [];
         results.forEach(result => {
-            validEngineers.push(JSON.stringify(result.engineer._id).replace(/\"/g, ''));
+            validEngineers.push(JSON.stringify(result.engineer));
         });
         let unique = [...new Set(validEngineers)];
+        console.log('Data type in set: ', typeof(unique[1]));
         res.send(unique);
     })
     .catch(err => console.log(`Ooopsie, error: ${err}`));
+    // res.send('Valid engineers from backend');
 })
 
 app.post('/add-engineer', (req, res, next) => {
@@ -52,7 +57,7 @@ app.post('/add-engineer', (req, res, next) => {
             console.log(`Error saving engineer: ${err}`);
         } else {
             console.log('Engineer saved', success);
-            res.send('Engineer saved: ', engineer);
+            res.send('Engineer saved: ');
         }
     });
 });
@@ -69,9 +74,5 @@ app.post('/add-history', (req, res, next) => {
         }
     });
 });
-
-app.get('/', (req, res, next) => {
-    res.send('<h1>It works!</h1>');
-})
 
 app.listen(config.server.port, () => console.log(`Express is listening on port ${config.server.port}`));

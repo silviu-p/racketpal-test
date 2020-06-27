@@ -1,0 +1,6 @@
+<!-- <p>{{ validEngineers }}</p>-->
+
+<button (click)="getValidEngineers()">Get Valid Engineers</button>
+<div *ngFor="let engineer of validEngineers | async">
+    {{ engineer }}
+</div>
